@@ -3,6 +3,7 @@ namespace WebStream\Database\Test;
 
 require_once dirname(__FILE__) . '/../Modules/Container/Container.php';
 require_once dirname(__FILE__) . '/../Modules/Container/ValueProxy.php';
+require_once dirname(__FILE__) . '/../Modules/DI/Injector.php';
 require_once dirname(__FILE__) . '/../Driver/DatabaseDriver.php';
 require_once dirname(__FILE__) . '/../ConnectionManager.php';
 require_once dirname(__FILE__) . '/../Test/Fixtures/DummyLogger.php';
@@ -11,6 +12,7 @@ require_once dirname(__FILE__) . '/../Test/Providers/ConnectionManagerProvider.p
 
 use WebStream\Container\Container;
 use WebStream\Database\Test\Fixtures\DummyLogger;
+use WebStream\Database\Test\Fixtures\DummyDriver;
 use WebStream\Database\ConnectionManager;
 use WebStream\Database\Test\Providers\ConnectionManagerProvider;
 
@@ -30,7 +32,7 @@ class ConnectionManagerTest extends \PHPUnit\Framework\TestCase
      * @test
      * @dataProvider connectionProvider
      */
-    public function okConnectionTest($configPath, $driverClassPath, $filepath, $connectionKey)
+    public function okConnectionTest($configPath, $driverClassPath, $filepath)
     {
         $container = new Container();
         $container->logger = new DummyLogger();
@@ -41,9 +43,6 @@ class ConnectionManagerTest extends \PHPUnit\Framework\TestCase
         $container->connectionContainerList = [$connectionContainer];
         $connectionManager = new ConnectionManager($container);
 
-        var_dump($connectionManager->getConnection("key"));
-
-
-        $this->assertTrue(true);
+        $this->assertInstanceOf(DummyDriver::class, $connectionManager->getConnection($filepath));
     }
 }
