@@ -15,6 +15,8 @@ matrix:
   include:
     - php: 7.1
       env: VERSION=latest
+    - php: 7.0
+      env: VERSION=7.0
 
 before_script:
   - echo "memory_limit=-1" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
