@@ -45,4 +45,17 @@ class ConnectionManagerTest extends \PHPUnit\Framework\TestCase
 
         $this->assertInstanceOf(DummyDriver::class, $connectionManager->getConnection($filepath));
     }
+
+    /**
+     * @test
+     */
+    public function ngConnectionTest()
+    {
+        $container = new Container();
+        $container->logger = new DummyLogger();
+        $connectionContainer = new Container();
+        $connectionContainer->configPath = "dummy.txt";
+        $container->connectionContainerList = [$connectionContainer];
+        $connectionManager = new ConnectionManager($container);
+    }
 }
