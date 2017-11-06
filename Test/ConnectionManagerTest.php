@@ -4,6 +4,9 @@ namespace WebStream\Database\Test;
 require_once dirname(__FILE__) . '/../Modules/Container/Container.php';
 require_once dirname(__FILE__) . '/../Modules/Container/ValueProxy.php';
 require_once dirname(__FILE__) . '/../Modules/DI/Injector.php';
+require_once dirname(__FILE__) . '/../Modules/Exception/ApplicationException.php';
+require_once dirname(__FILE__) . '/../Modules/Exception/Extend/ClassNotFoundException.php';
+require_once dirname(__FILE__) . '/../Modules/Exception/Extend/DatabaseException.php';
 require_once dirname(__FILE__) . '/../Driver/DatabaseDriver.php';
 require_once dirname(__FILE__) . '/../ConnectionManager.php';
 require_once dirname(__FILE__) . '/../Test/Fixtures/DummyLogger.php';
@@ -47,9 +50,12 @@ class ConnectionManagerTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
+     * 異常系
+     * 不正な設定ファイルが指定された場合、例外が発生すること
      * @test
+     * @expectedException WebStream\Exception\Extend\DatabaseException
      */
-    public function ngConnectionTest()
+    public function ngConfigPathTest()
     {
         $container = new Container();
         $container->logger = new DummyLogger();
@@ -57,5 +63,26 @@ class ConnectionManagerTest extends \PHPUnit\Framework\TestCase
         $connectionContainer->configPath = "dummy.txt";
         $container->connectionContainerList = [$connectionContainer];
         $connectionManager = new ConnectionManager($container);
+
+        $this->assertTrue(false);
+    }
+
+    /**
+     * 異常系
+     * 不正なドライバクラスパスが指定された場合、例外が発生すること
+     * @test
+     * @expectedException WebStream\Exception\Extend\ClassNotFoundException
+     */
+    public function ngInvalidDriverClassPathTest()
+    {
+        $container = new Container();
+        $container->logger = new DummyLogger();
+        $connectionContainer = new Container();
+        $connectionContainer->configPath = dirname(__FILE__) . '/../Fixtures/database.yml';
+        $connectionContainer->driverClassPath = "DummyClass";
+        $container->connectionContainerList = [$connectionContainer];
+        $connectionManager = new ConnectionManager($container);
+
+        $this->assertTrue(false);
     }
 }

@@ -2,6 +2,7 @@
 namespace WebStream\Database;
 
 use WebStream\Container\Container;
+use WebStream\Exception\Extend\ClassNotFoundException;
 use WebStream\Exception\Extend\DatabaseException;
 
 /**
@@ -60,6 +61,7 @@ class ConnectionManager
         $this->classpathMap = [];
         $this->connectionContainer = new Container();
         $logger = $container->logger;
+        $innerException = null;
 
         foreach ($container->connectionContainerList as $container) {
             $config = null;
@@ -73,6 +75,10 @@ class ConnectionManager
             }
 
             $driverClassPath = $container->driverClassPath;
+
+            if (!class_exists($driverClassPath)) {
+                throw new ClassNotFoundException("$driverClassPath is not defined.");
+            }
 
             $dsnHash = "";
             $databaseConfigContainer = new Container(false);
