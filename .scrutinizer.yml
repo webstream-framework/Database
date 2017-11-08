@@ -16,8 +16,7 @@ filter:
         - 'Test/*'
         - 'Modules/*'
 tools:
-    external_code_coverage:
-        timeout: 2400
+    external_code_coverage: true
     php_sim: true
     php_cpd: false
     php_code_coverage:
