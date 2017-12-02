@@ -12,8 +12,8 @@ trait ConnectionManagerProvider
     public function connectionProvider()
     {
         return [
-            [dirname(__FILE__) . '/../Fixtures/database.ini', 'WebStream\Database\Test\Fixtures\DummyDriver', "key"],
-            [dirname(__FILE__) . '/../Fixtures/database.yml', 'WebStream\Database\Test\Fixtures\DummyDriver', "key"]
+            [dirname(__FILE__) . '/../Fixtures/database.mock.ini', 'WebStream\Database\Test\Fixtures\DummyDriver', "key"],
+            [dirname(__FILE__) . '/../Fixtures/database.mock.yml', 'WebStream\Database\Test\Fixtures\DummyDriver', "key"]
         ];
     }
 }

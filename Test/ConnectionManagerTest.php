@@ -14,9 +14,9 @@ require_once dirname(__FILE__) . '/../Test/Fixtures/DummyDriver.php';
 require_once dirname(__FILE__) . '/../Test/Providers/ConnectionManagerProvider.php';
 
 use WebStream\Container\Container;
+use WebStream\Database\ConnectionManager;
 use WebStream\Database\Test\Fixtures\DummyLogger;
 use WebStream\Database\Test\Fixtures\DummyDriver;
-use WebStream\Database\ConnectionManager;
 use WebStream\Database\Test\Providers\ConnectionManagerProvider;
 
 /**

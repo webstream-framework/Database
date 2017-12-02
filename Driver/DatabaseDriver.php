@@ -138,4 +138,9 @@ abstract class DatabaseDriver
     {
         $this->connection->setTransactionIsolation($isolationLevel);
     }
+
+    public function getConnection()
+    {
+        return $this->connection;
+    }
 }

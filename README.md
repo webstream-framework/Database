@@ -1,4 +1,6 @@
 # Database
+[![Build Status](https://travis-ci.org/webstream-framework/Database.svg?branch=master)](https://travis-ci.org/webstream-framework/Database)
+
 
 This Library is module for database connection.  
 Supported drivers are as follows:

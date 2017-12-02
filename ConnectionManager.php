@@ -74,6 +74,9 @@ class ConnectionManager
                 throw new DatabaseException("Yaml or ini file only available database configuration file.");
             }
 
+            var_dump(spyc_load_file($container->configPath));
+            var_dump($config);
+
             $driverClassPath = $container->driverClassPath;
 
             if (!class_exists($driverClassPath)) {

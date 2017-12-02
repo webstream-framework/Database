@@ -27,6 +27,8 @@ class Mysql extends DatabaseDriver
             'charset'  => 'utf8'
         ];
 
+        var_dump($params);
+
         $config = new Configuration([
             \PDO::ATTR_PERSISTENT => true,
             \PDO::ATTR_EMULATE_PREPARES => false,
