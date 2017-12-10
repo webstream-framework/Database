@@ -2,6 +2,7 @@
 namespace WebStream\Database;
 
 use WebStream\Container\Container;
+use WebStream\IO\File;
 use WebStream\Exception\Extend\ClassNotFoundException;
 use WebStream\Exception\Extend\DatabaseException;
 
@@ -65,17 +66,20 @@ class ConnectionManager
 
         foreach ($container->connectionContainerList as $container) {
             $config = null;
-            $ext = pathinfo($container->configPath, PATHINFO_EXTENSION);
+            $configFile = new File($container->configPath);
+
+            if (!$configFile->exists()) {
+                throw new DatabaseException("Database configuration file is not found: " . $configFile->getFilePath());
+            }
+
+            $ext = $configFile->getFileExtension();
             if ($ext === 'ini') {
-                $config = parse_ini_file($container->configPath);
+                $config = parse_ini_file($configFile->getFilePath());
             } elseif ($ext === 'yml' || $ext === 'yaml') {
-                $config = \Spyc::YAMLLoad($container->configPath);
+                $config = \Spyc::YAMLLoad($configFile->getFilePath());
             } else {
                 throw new DatabaseException("Yaml or ini file only available database configuration file.");
             }
-
-            var_dump(spyc_load_file($container->configPath));
-            var_dump($config);
 
             $driverClassPath = $container->driverClassPath;
 

@@ -2,7 +2,6 @@
 namespace WebStream\Database;
 
 use WebStream\DI\Injector;
-use WebStream\Module\Utility\CommonUtils;
 
 /**
  * EntityManager
@@ -12,7 +11,7 @@ use WebStream\Module\Utility\CommonUtils;
  */
 class EntityManager
 {
-    use Injector, CommonUtils;
+    use Injector;
 
     /**
      * @var string エンティティクラスパス
@@ -90,7 +89,9 @@ class EntityManager
                     break;
             }
 
-            $col = strtolower($this->snake2lcamel($col));
+            $col = strtolower(preg_replace_callback('/_([a-zA-Z])/', function ($matches) {
+                return ucfirst($matches[1]);
+            }, $col));
 
             if ($propertyMap === null) {
                 $instance->{$col} = $value;

@@ -116,7 +116,7 @@ abstract class DatabaseDriver
      * @param string SQL
      * @return object ステートメント
      */
-    public function getStatement($sql)
+    public function getStatement(string $sql)
     {
         return $this->connection !== null ? $this->connection->prepare($sql) : null;
     }

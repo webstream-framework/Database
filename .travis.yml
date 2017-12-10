@@ -22,11 +22,13 @@ before_script:
   - echo "memory_limit=-1" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
   - composer install
   - mkdir -p build/logs
+  - docker run --name test-mysql -p 3307:3307 -e MYSQL_DATABASE=sandbox -e MYSQL_USER=mysql -e MYSQL_PASSWORD=mysql -e MYSQL_ROOT_PASSWORD=root -d webstream/mysql
 
 script:
-  - if [[ $VERSION = 'latest' ]]; then docker run -v /home/travis/build/webstream-framework/Database:/workspace/ webstream/php-alpine phpdbg -qrr vendor/bin/phpunit --configuration phpunit.xml --coverage-clover=coverage.clover; fi
-  - if [[ $VERSION != 'latest' ]]; then docker run -v /home/travis/build/webstream-framework/Database:/workspace/ webstream/php-alpine vendor/bin/phpunit --configuration phpunit.xml; fi
+  - if [[ $VERSION = 'latest' ]]; then docker run -v /home/travis/build/webstream-framework/Database:/workspace/ --rm --link test-mysql:mysql webstream/php-cli phpdbg -qrr vendor/bin/phpunit --configuration phpunit.xml --coverage-clover=coverage.clover; fi
+  - if [[ $VERSION != 'latest' ]]; then docker run -v /home/travis/build/webstream-framework/Database:/workspace/ --rm --link test-mysql:mysql webstream/php-cli vendor/bin/phpunit --configuration phpunit.xml; fi
 
 after_script:
+  - docker rm -f test-mysql
   - if [[ $VERSION = 'latest' ]]; then wget https://scrutinizer-ci.com/ocular.phar; fi
   - if [[ $VERSION = 'latest' ]]; then php ocular.phar code-coverage:upload --format=php-clover build/logs/clover.xml; fi
