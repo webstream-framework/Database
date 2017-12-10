@@ -9,6 +9,7 @@ require_once dirname(__FILE__) . '/../Modules/Exception/ApplicationException.php
 require_once dirname(__FILE__) . '/../Modules/Exception/Extend/DatabaseException.php';
 require_once dirname(__FILE__) . '/../Driver/DatabaseDriver.php';
 require_once dirname(__FILE__) . '/../Driver/Mysql.php';
+require_once dirname(__FILE__) . '/../Driver/Postgresql.php';
 require_once dirname(__FILE__) . '/../ConnectionManager.php';
 require_once dirname(__FILE__) . '/../DatabaseManager.php';
 require_once dirname(__FILE__) . '/../Query.php';
@@ -38,13 +39,13 @@ class DatabaseIntegrationTest extends \PHPUnit\Framework\TestCase
      * @test
      * @dataProvider selectProvider
      */
-    public function okSelect($sql, $bind, $expect)
+    public function okSelect($sql, $bind, $expect, $driverClassPath, $configPath)
     {
         $container = new Container();
         $container->logger = new DummyLogger();
         $config = new Container();
-        $config->configPath = dirname(__FILE__) . '/Fixtures/database.mysql.yml';
-        $config->driverClassPath = 'WebStream\Database\Driver\Mysql';
+        $config->configPath = dirname(__FILE__) . $configPath;
+        $config->driverClassPath = $driverClassPath;
         $config->filepath = "test";
         $container->connectionContainerList = [$config];
 
@@ -63,13 +64,13 @@ class DatabaseIntegrationTest extends \PHPUnit\Framework\TestCase
      * @test
      * @dataProvider selectProvider
      */
-    public function okSelectEntity($sql, $bind, $expect)
+    public function okSelectEntity($sql, $bind, $expect, $driverClassPath, $configPath)
     {
         $container = new Container();
         $container->logger = new DummyLogger();
         $config = new Container();
-        $config->configPath = dirname(__FILE__) . '/Fixtures/database.mysql.yml';
-        $config->driverClassPath = 'WebStream\Database\Driver\Mysql';
+        $config->configPath = dirname(__FILE__) . $configPath;
+        $config->driverClassPath = $driverClassPath;
         $config->filepath = "test";
         $container->connectionContainerList = [$config];
 
@@ -92,13 +93,13 @@ class DatabaseIntegrationTest extends \PHPUnit\Framework\TestCase
      * @test
      * @dataProvider insertProvider
      */
-    public function okInsert($sql, $bind, $expect)
+    public function okInsert($sql, $bind, $expect, $driverClassPath, $configPath)
     {
         $container = new Container();
         $container->logger = new DummyLogger();
         $config = new Container();
-        $config->configPath = dirname(__FILE__) . '/Fixtures/database.mysql.yml';
-        $config->driverClassPath = 'WebStream\Database\Driver\Mysql';
+        $config->configPath = dirname(__FILE__) . $configPath;
+        $config->driverClassPath = $driverClassPath;
         $config->filepath = "test";
         $container->connectionContainerList = [$config];
 
@@ -117,13 +118,13 @@ class DatabaseIntegrationTest extends \PHPUnit\Framework\TestCase
      * @test
      * @dataProvider updateProvider
      */
-    public function okUpdate($sql, $bind, $expect)
+    public function okUpdate($sql, $bind, $expect, $driverClassPath, $configPath)
     {
         $container = new Container();
         $container->logger = new DummyLogger();
         $config = new Container();
-        $config->configPath = dirname(__FILE__) . '/Fixtures/database.mysql.yml';
-        $config->driverClassPath = 'WebStream\Database\Driver\Mysql';
+        $config->configPath = dirname(__FILE__) . $configPath;
+        $config->driverClassPath = $driverClassPath;
         $config->filepath = "test";
         $container->connectionContainerList = [$config];
 
@@ -142,13 +143,13 @@ class DatabaseIntegrationTest extends \PHPUnit\Framework\TestCase
      * @test
      * @dataProvider deleteProvider
      */
-    public function okDelete($sql)
+    public function okDelete($sql, $driverClassPath, $configPath)
     {
         $container = new Container();
         $container->logger = new DummyLogger();
         $config = new Container();
-        $config->configPath = dirname(__FILE__) . '/Fixtures/database.mysql.yml';
-        $config->driverClassPath = 'WebStream\Database\Driver\Mysql';
+        $config->configPath = dirname(__FILE__) . $configPath;
+        $config->driverClassPath = $driverClassPath;
         $config->filepath = "test";
         $container->connectionContainerList = [$config];
 
