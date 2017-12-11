@@ -22,8 +22,8 @@ before_script:
   - echo "memory_limit=-1" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
   - composer install
   - mkdir -p build/logs
-  - docker run --name test-mysql -p 3307:3307 -e MYSQL_DATABASE=sandbox -e MYSQL_USER=mysql -e MYSQL_PASSWORD=mysql -e MYSQL_ROOT_PASSWORD=root -d webstream/mysql
-  - docker run --name test-postgres -p 5432:5432 -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -d webstream/postgres
+  - docker run --name test-mysql -p 13307:3307 -e MYSQL_DATABASE=sandbox -e MYSQL_USER=mysql -e MYSQL_PASSWORD=mysql -e MYSQL_ROOT_PASSWORD=root -d webstream/mysql
+  - docker run --name test-postgres -p 15432:5432 -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -d webstream/postgres
 
 script:
   - if [[ $VERSION = 'latest' ]]; then docker run -v /home/travis/build/webstream-framework/Database:/workspace/ --rm --link test-mysql:mysql --link test-postgres:postgres webstream/php-cli phpdbg -qrr vendor/bin/phpunit --configuration phpunit.xml --coverage-clover=coverage.clover; fi
