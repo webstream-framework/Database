@@ -24,13 +24,15 @@ before_script:
   - mkdir -p build/logs
   - docker run --name test-mysql -p 13307:3307 -e MYSQL_DATABASE=sandbox -e MYSQL_USER=mysql -e MYSQL_PASSWORD=mysql -e MYSQL_ROOT_PASSWORD=root -d webstream/mysql
   - docker run --name test-postgres -p 15432:5432 -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -d webstream/postgres
+  - docker create --name test-sqlite -v /tmp webstream/sqlite
 
 script:
-  - if [[ $VERSION = 'latest' ]]; then docker run -v /home/travis/build/webstream-framework/Database:/workspace/ --rm --link test-mysql:mysql --link test-postgres:postgres webstream/php-cli phpdbg -qrr vendor/bin/phpunit --configuration phpunit.xml --coverage-clover=coverage.clover; fi
-  - if [[ $VERSION != 'latest' ]]; then docker run -v /home/travis/build/webstream-framework/Database:/workspace/ --rm --link test-mysql:mysql --link test-postgres:postgres webstream/php-cli vendor/bin/phpunit --configuration phpunit.xml; fi
+  - if [[ $VERSION = 'latest' ]]; then docker run --volumes-from test-sqlite -v /home/travis/build/webstream-framework/Database:/workspace/ --rm --link test-mysql:mysql --link test-postgres:postgres webstream/php-cli phpdbg -qrr vendor/bin/phpunit --configuration phpunit.xml --coverage-clover=coverage.clover; fi
+  - if [[ $VERSION != 'latest' ]]; then docker run --volumes-from test-sqlite -v /home/travis/build/webstream-framework/Database:/workspace/ --rm --link test-mysql:mysql --link test-postgres:postgres webstream/php-cli vendor/bin/phpunit --configuration phpunit.xml; fi
 
 after_script:
   - docker rm -f test-mysql
   - docker rm -f test-postgres
+  - docker rm -f test-sqlite
   - if [[ $VERSION = 'latest' ]]; then wget https://scrutinizer-ci.com/ocular.phar; fi
-  - if [[ $VERSION = 'latest' ]]; then php ocular.phar code-coverage:upload --format=php-clover build/logs/clover.xml; fi
+  - if [[ $VERSION = 'latest' ]]; then php ocular.phar code-coverage:upload --format=php-clover coverage.clover; fi

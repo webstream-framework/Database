@@ -10,6 +10,7 @@ require_once dirname(__FILE__) . '/../Modules/Exception/Extend/DatabaseException
 require_once dirname(__FILE__) . '/../Driver/DatabaseDriver.php';
 require_once dirname(__FILE__) . '/../Driver/Mysql.php';
 require_once dirname(__FILE__) . '/../Driver/Postgresql.php';
+require_once dirname(__FILE__) . '/../Driver/Sqlite.php';
 require_once dirname(__FILE__) . '/../ConnectionManager.php';
 require_once dirname(__FILE__) . '/../DatabaseManager.php';
 require_once dirname(__FILE__) . '/../Query.php';
