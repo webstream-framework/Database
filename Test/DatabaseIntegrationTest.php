@@ -19,7 +19,8 @@ require_once dirname(__FILE__) . '/../ResultEntity.php';
 require_once dirname(__FILE__) . '/../EntityManager.php';
 require_once dirname(__FILE__) . '/../EntityProperty.php';
 require_once dirname(__FILE__) . '/../Test/Fixtures/DummyLogger.php';
-require_once dirname(__FILE__) . '/../Test/Fixtures/ResultEntityFixture.php';
+require_once dirname(__FILE__) . '/../Test/Fixtures/ResultEntity.php';
+require_once dirname(__FILE__) . '/../Test/Fixtures/ResultPropertyEntity.php';
 require_once dirname(__FILE__) . '/../Test/Providers/DatabaseProvider.php';
 
 use WebStream\Container\Container;
@@ -81,10 +82,39 @@ class DatabaseIntegrationTest extends \PHPUnit\Framework\TestCase
         $result = $manager->query($sql, $bind)->select();
         $manager->disconnect();
 
-        $entityList = $result->toEntity('WebStream\Database\Test\Fixtures\ResultEntityFixture');
+        $entityList = $result->toEntity('WebStream\Database\Test\Fixtures\ResultEntity');
         foreach ($entityList as $index => $entity) {
             $this->assertEquals($entity->getId(), $expect[$index]['id']);
             $this->assertEquals($entity->getName(), $expect[$index]['name']);
+        }
+    }
+
+    /**
+     * 正常系
+     * selectが実行できること、エンティティにマッピングできること
+     * @test
+     * @dataProvider selectProvider
+     */
+    public function okSelectPropertyEntity($sql, $bind, $expect, $driverClassPath, $configPath)
+    {
+        $container = new Container();
+        $container->logger = new DummyLogger();
+        $config = new Container();
+        $config->configPath = dirname(__FILE__) . $configPath;
+        $config->driverClassPath = $driverClassPath;
+        $config->filepath = "test";
+        $container->connectionContainerList = [$config];
+
+        $manager = new DatabaseManager($container);
+        $manager->loadConnection($config->filepath);
+        $manager->connect();
+        $result = $manager->query($sql, $bind)->select();
+        $manager->disconnect();
+
+        $entityList = $result->toEntity('WebStream\Database\Test\Fixtures\ResultPropertyEntity');
+        foreach ($entityList as $index => $entity) {
+            $this->assertEquals($entity->id, $expect[$index]['id']);
+            $this->assertEquals($entity->name, $expect[$index]['name']);
         }
     }
 

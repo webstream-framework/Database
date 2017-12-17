@@ -1,7 +1,7 @@
 <?php
 namespace WebStream\Database\Test\Fixtures;
 
-class ResultEntityFixture
+class ResultEntity
 {
     private $id;
     private $name;
