@@ -47,4 +47,13 @@ trait DatabaseProvider
             ['DELETE FROM T_WebStream', 'WebStream\Database\Driver\Sqlite', '/Fixtures/database.sqlite.yml']
         ];
     }
+
+    public function transactionProvider()
+    {
+        return [
+            ['WebStream\Database\Driver\Mysql', '/Fixtures/database.mysql.yml'],
+            ['WebStream\Database\Driver\Postgresql', '/Fixtures/database.postgres.yml'],
+            ['WebStream\Database\Driver\Sqlite', '/Fixtures/database.sqlite.yml']
+        ];
+    }
 }

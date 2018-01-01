@@ -16,9 +16,9 @@ class Query
     use Injector;
 
     /**
-     * @var DatabaseDriver データベースドライバ
+     * @var DatabaseDriver データベースコネクション
      */
-    private $driver;
+    private $connection;
 
     /**
      * @var string SQL
@@ -37,11 +37,11 @@ class Query
 
     /**
      * Constructor
-     * @param object データベースドライバ
+     * @param DatabaseDriver データベースコネクション
      */
-    public function __construct(DatabaseDriver $driver)
+    public function __construct(DatabaseDriver $connection)
     {
-        $this->driver = $driver;
+        $this->connection = $connection;
     }
 
     /**
@@ -118,7 +118,7 @@ class Query
         $this->stmt = null;
 
         try {
-            $stmt = $this->driver->getStatement($this->sql);
+            $stmt = $this->connection->getStatement($this->sql);
             if ($stmt === false) {
                 throw new DatabaseException("Can't create statement: ". $this->sql);
             }

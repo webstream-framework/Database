@@ -29,9 +29,12 @@ use WebStream\Database\Test\Fixtures\DummyLogger;
 use WebStream\Database\Test\Providers\DatabaseProvider;
 
 /**
- * MysqlTest
+ * CRUDTest
+ * @author Ryuichi TANAKA.
+ * @since 2017/12/17
+ * @version 0.7
  */
-class DatabaseIntegrationTest extends \PHPUnit\Framework\TestCase
+class CRUDTest extends \PHPUnit\Framework\TestCase
 {
     use DatabaseProvider;
 

@@ -27,6 +27,11 @@ class DatabaseManager
     private $connection;
 
     /**
+     * @var bool 自動コミットフラグ
+     */
+    private $isAutoCommit;
+
+    /**
      * @var Query クエリオブジェクト
      */
     private $query;
@@ -44,6 +49,7 @@ class DatabaseManager
     {
         $this->connectionManager = new ConnectionManager($container);
         $this->logger = $container->logger;
+        $this->isAutoCommit = false;
     }
 
     /**
@@ -52,6 +58,7 @@ class DatabaseManager
     public function __destruct()
     {
         $this->disconnect();
+        $this->query = null;
     }
 
     /**
@@ -87,7 +94,6 @@ class DatabaseManager
 
         $this->connection->disconnect();
         $this->connection = null;
-        $this->query = null;
     }
 
     /**
@@ -107,6 +113,8 @@ class DatabaseManager
         if (!$this->connection->beginTransaction()) {
             throw new DatabaseException("Failed to start transaction.");
         }
+
+        $this->connection->setAutoCommit($this->isAutoCommit);
 
         if ($isolationLevel === Connection::TRANSACTION_READ_UNCOMMITTED ||
             $isolationLevel === Connection::TRANSACTION_READ_COMMITTED ||
@@ -139,8 +147,6 @@ class DatabaseManager
         } catch (\PDOException $e) {
             $this->query = null;
             throw new DatabaseException($e);
-        } finally {
-            $this->disconnect();
         }
     }
 
@@ -163,9 +169,23 @@ class DatabaseManager
         } catch (\PDOException $e) {
             $this->query = null;
             throw new DatabaseException($e);
-        } finally {
-            $this->disconnect();
         }
+    }
+
+    /**
+     * 自動コミットを有効化
+     */
+    public function enableAutoCommit()
+    {
+        $this->isAutoCommit = true;
+    }
+
+    /**
+     * 自動コミットを無効化
+     */
+    public function disableAutoCommit()
+    {
+        $this->isAutoCommit = false;
     }
 
     /**

@@ -89,13 +89,22 @@ abstract class DatabaseDriver
     public function rollback()
     {
         if ($this->inTransaction()) {
-            $this->connection->rollback();
+            $this->connection->rollBack();
         }
     }
 
     /**
+     * 自動コミットフラグを設定する
+     * @param bool $isAutoCommit 自動コミットフラグ
+     */
+    public function setAutoCommit(bool $isAutoCommit)
+    {
+        $this->connection->setAutoCommit($isAutoCommit);
+    }
+
+    /**
      * DB接続されているか
-     * @param boolean 接続有無
+     * @return bool 接続有無
      */
     public function isConnected()
     {
@@ -104,7 +113,7 @@ abstract class DatabaseDriver
 
     /**
      * トランザクション内かどうか
-     * @return boolean トランザクション内かどうか
+     * @return bool トランザクション内かどうか
      */
     public function inTransaction()
     {
@@ -137,10 +146,5 @@ abstract class DatabaseDriver
     public function setTransactionIsolation(int $isolationLevel)
     {
         $this->connection->setTransactionIsolation($isolationLevel);
-    }
-
-    public function getConnection()
-    {
-        return $this->connection;
     }
 }
