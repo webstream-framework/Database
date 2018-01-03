@@ -144,7 +144,7 @@ class DatabaseManager
             } else {
                 throw new DatabaseException("Can't execute commit.");
             }
-        } catch (\PDOException $e) {
+        } catch (\Exception $e) {
             $this->query = null;
             throw new DatabaseException($e);
         }
@@ -166,8 +166,30 @@ class DatabaseManager
             } else {
                 throw new DatabaseException("Can't execute rollback.");
             }
-        } catch (\PDOException $e) {
+        } catch (\Exception $e) {
             $this->query = null;
+            throw new DatabaseException($e);
+        }
+    }
+
+    /**
+     * トランザクションスコープを使用する
+     * @param  Closure $closure クロージャ
+     * @return object 処理結果
+     */
+    public function transactional(\Closure $closure)
+    {
+        $this->beginTransaction();
+        $this->disableAutoCommit();
+        try {
+            $result = $closure($this);
+            $this->commit();
+            return $result;
+        } catch (DatabaseException $e) {
+            $this->rollback();
+            throw $e;
+        } catch (\Throwable $e) {
+            $this->rollback();
             throw new DatabaseException($e);
         }
     }

@@ -37,6 +37,37 @@ class TransactionTest extends \PHPUnit\Framework\TestCase
 {
     use DatabaseProvider;
 
+    public function setUp()
+    {
+        $driverClassPathList = [
+            'WebStream\Database\Driver\Mysql',
+            'WebStream\Database\Driver\Postgresql',
+            'WebStream\Database\Driver\Sqlite',
+        ];
+
+        $configPathList = [
+             dirname(__FILE__) . '/Fixtures/database.mysql.yml',
+             dirname(__FILE__) . '/Fixtures/database.postgres.yml',
+             dirname(__FILE__) . '/Fixtures/database.sqlite.yml'
+        ];
+
+        for ($i = 0; $i < 3; $i++) {
+            $container = new Container();
+            $container->logger = new DummyLogger();
+            $config = new Container();
+            $config->configPath = $configPathList[$i];
+            $config->driverClassPath = $driverClassPathList[$i];
+            $config->filepath = "test";
+            $container->connectionContainerList = [$config];
+            $manager = new DatabaseManager($container);
+            $manager->loadConnection($config->filepath);
+            $manager->connect();
+            $manager->enableAutoCommit();
+            $manager->query('DELETE FROM T_WebStream')->delete();
+            $manager->disconnect();
+        }
+    }
+
     /**
      * 正常系
      * commitが実行できること
@@ -58,7 +89,6 @@ class TransactionTest extends \PHPUnit\Framework\TestCase
 
         $manager->connect();
         $manager->beginTransaction(Connection::TRANSACTION_READ_COMMITTED);
-        $manager->query('DELETE FROM T_WebStream')->delete();
         $manager->query('INSERT INTO T_WebStream (name) VALUES (:name)', ['name' => 'test'])->insert();
         $manager->query('INSERT INTO T_WebStream (name) VALUES (:name)', ['name' => 'test'])->insert();
         $manager->query('INSERT INTO T_WebStream (name) VALUES (:name)', ['name' => 'test'])->insert();
@@ -98,7 +128,6 @@ class TransactionTest extends \PHPUnit\Framework\TestCase
         $manager->connect();
         $manager->beginTransaction(Connection::TRANSACTION_READ_COMMITTED);
         $manager->disableAutoCommit();
-        $manager->query('DELETE FROM T_WebStream')->delete();
         $manager->query('INSERT INTO T_WebStream (name) VALUES (:name)', ['name' => 'test'])->insert();
         $manager->rollback();
         $manager->disconnect();
@@ -109,6 +138,6 @@ class TransactionTest extends \PHPUnit\Framework\TestCase
         $result = $manager->query('SELECT COUNT(*) AS count FROM T_WebStream')->select();
         $rowCount = (int)$result[0]['count'];
 
-        $this->assertEquals(4, $rowCount);
+        $this->assertEquals(0, $rowCount);
     }
 }
