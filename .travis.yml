@@ -13,8 +13,10 @@ cache:
 matrix:
   fast_finish: true
   include:
-    - php: 7.1
+    - php: 7.2
       env: VERSION=latest
+    - php: 7.1
+      env: VERSION=7.1
     - php: 7.0
       env: VERSION=7.0
 
@@ -27,8 +29,7 @@ before_script:
   - docker create --name test-sqlite -v /tmp webstream/sqlite
 
 script:
-  - if [[ $VERSION = 'latest' ]]; then docker run --volumes-from test-sqlite -v /home/travis/build/webstream-framework/Database:/workspace/ --rm --link test-mysql:mysql --link test-postgres:postgres webstream/php-cli phpdbg -qrr vendor/bin/phpunit --configuration phpunit.xml --coverage-clover=coverage.clover; fi
-  - if [[ $VERSION != 'latest' ]]; then docker run --volumes-from test-sqlite -v /home/travis/build/webstream-framework/Database:/workspace/ --rm --link test-mysql:mysql --link test-postgres:postgres webstream/php-cli vendor/bin/phpunit --configuration phpunit.xml; fi
+  - docker run --volumes-from test-sqlite -v /home/travis/build/webstream-framework/Database:/workspace/ --rm --link test-mysql:mysql --link test-postgres:postgres webstream/php-cli:$VERSION phpdbg -qrr vendor/bin/phpunit --configuration phpunit.xml
 
 after_script:
   - docker rm -f test-mysql
