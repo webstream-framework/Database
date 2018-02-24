@@ -52,7 +52,7 @@ class EntityManager
         $propertyMap = null;
 
         // EntityPropertyを使っている場合はリフレクションを使用しない
-        if (!array_key_exists("WebStream\Database\EntityProperty", class_uses($instance))) {
+        if (!array_key_exists(EntityProperty::class, class_uses($instance))) {
             $propertyMap = [];
             $refClass = new \ReflectionClass($instance);
             $properties = $refClass->getProperties();
