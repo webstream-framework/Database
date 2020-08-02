@@ -27,8 +27,12 @@ jobs:
     - name: Install dependencies
       if: steps.composer-cache.outputs.cache-hit != 'true'
       run: composer install --prefer-dist --no-progress --no-suggest
+    - name: Create containers
+      run: docker-compose up -d
+    - name: debug
+      run: docker ps
     - name: Run test suite and calculate coverage
-      run: vendor/bin/phpunit --configuration phpunit.xml --coverage-clover=coverage.clover
+      run: phpdbg -qrr vendor/bin/phpunit --configuration phpunit.xml --coverage-clover=coverage.clover
     - name: Prepare send coverage
       run: wget https://scrutinizer-ci.com/ocular.phar
     - name: Send coverage report to scrutinizer
