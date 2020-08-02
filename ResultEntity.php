@@ -1,4 +1,5 @@
 <?php
+
 namespace WebStream\Database;
 
 use WebStream\DI\Injector;
@@ -67,7 +68,7 @@ class ResultEntity implements \Iterator, \SeekableIterator, \ArrayAccess, \Count
     public function initialize()
     {
         $this->entityManager->inject('logger', $this->logger)
-                            ->setColumnMeta($this->getColumnMeta());
+            ->setColumnMeta($this->getColumnMeta());
     }
 
     /**

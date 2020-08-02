@@ -1,4 +1,5 @@
 <?php
+
 namespace WebStream\Database\Test;
 
 require_once dirname(__FILE__) . '/../Modules/IO/File.php';
@@ -26,7 +27,7 @@ use WebStream\Database\DatabaseManager;
 use WebStream\Database\Test\Fixtures\DummyLogger;
 use WebStream\Database\Test\Providers\DatabaseProvider;
 use WebStream\Exception\Extend\DatabaseException;
-use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\TransactionIsolationLevel;
 
 /**
  * TransactionTest
@@ -44,15 +45,17 @@ class TransactionTest extends \PHPUnit\Framework\TestCase
             'WebStream\Database\Driver\Mysql',
             'WebStream\Database\Driver\Postgresql',
             'WebStream\Database\Driver\Sqlite',
+            'WebStream\Database\Driver\Mysql'
         ];
 
         $configPathList = [
              dirname(__FILE__) . '/Fixtures/database.mysql.yml',
              dirname(__FILE__) . '/Fixtures/database.postgres.yml',
-             dirname(__FILE__) . '/Fixtures/database.sqlite.yml'
+             dirname(__FILE__) . '/Fixtures/database.sqlite.yml',
+             dirname(__FILE__) . '/Fixtures/database.mariadb.yml'
         ];
 
-        for ($i = 0; $i < 3; $i++) {
+        for ($i = 0; $i < count($driverClassPathList); $i++) {
             $container = new Container();
             $container->logger = new DummyLogger();
             $config = new Container();
@@ -89,7 +92,7 @@ class TransactionTest extends \PHPUnit\Framework\TestCase
         $manager->loadConnection($config->filepath);
 
         $manager->connect();
-        $manager->beginTransaction(Connection::TRANSACTION_READ_COMMITTED);
+        $manager->beginTransaction(TransactionIsolationLevel::READ_COMMITTED);
         $manager->query('INSERT INTO T_WebStream (name) VALUES (:name)', ['name' => 'test'])->insert();
         $manager->query('INSERT INTO T_WebStream (name) VALUES (:name)', ['name' => 'test'])->insert();
         $manager->query('INSERT INTO T_WebStream (name) VALUES (:name)', ['name' => 'test'])->insert();
@@ -127,7 +130,7 @@ class TransactionTest extends \PHPUnit\Framework\TestCase
         $manager->loadConnection($config->filepath);
 
         $manager->connect();
-        $manager->beginTransaction(Connection::TRANSACTION_READ_COMMITTED);
+        $manager->beginTransaction(TransactionIsolationLevel::READ_COMMITTED);
         $manager->disableAutoCommit();
         $manager->query('INSERT INTO T_WebStream (name) VALUES (:name)', ['name' => 'test'])->insert();
         $manager->rollback();
@@ -161,7 +164,7 @@ class TransactionTest extends \PHPUnit\Framework\TestCase
         $manager = new DatabaseManager($container);
         $manager->loadConnection($config->filepath);
         $transactionConfig = [
-            'isolationLevel' => Connection::TRANSACTION_READ_COMMITTED,
+            'isolationLevel' => TransactionIsolationLevel::READ_COMMITTED,
             'autoCommit' => false
         ];
 

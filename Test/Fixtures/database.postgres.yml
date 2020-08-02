@@ -1,4 +1,4 @@
-host: postgres
+host: webstream-framework-database-postgresql
 port: 5432
 username: postgres
 password: postgres

@@ -1,8 +1,10 @@
 <?php
+
 namespace WebStream\Database;
 
 use WebStream\DI\Injector;
 use WebStream\Exception\Extend\CollectionException;
+use Doctrine\DBAL\Statement;
 
 /**
  * Result
@@ -36,9 +38,9 @@ class Result implements \Iterator, \SeekableIterator, \ArrayAccess, \Countable
 
     /**
      * コンストラクタ
-     * @param Doctrine\DBAL\Driver\Statement ステートメントオブジェクト
+     * @param Statement ステートメントオブジェクト
      */
-    public function __construct(\Doctrine\DBAL\Driver\Statement $stmt)
+    public function __construct(Statement $stmt)
     {
         $this->stmt = $stmt;
         $this->position = 0;

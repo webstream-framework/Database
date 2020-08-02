@@ -1,4 +1,5 @@
 <?php
+
 namespace WebStream\Database;
 
 use WebStream\DI\Injector;
@@ -31,7 +32,7 @@ class Query
     private $bind;
 
     /**
-     * @var Doctrine\DBAL\Statement ステートメント
+     * @var \Doctrine\DBAL\Statement ステートメント
      */
     private $stmt;
 
@@ -120,7 +121,7 @@ class Query
         try {
             $stmt = $this->connection->getStatement($this->sql);
             if ($stmt === false) {
-                throw new DatabaseException("Can't create statement: ". $this->sql);
+                throw new DatabaseException("Can't create statement: " . $this->sql);
             }
             $this->logger->info("Executed SQL: " . $this->sql);
             foreach ($this->bind as $key => $value) {

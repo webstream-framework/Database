@@ -1,4 +1,5 @@
 <?php
+
 namespace WebStream\Database;
 
 use WebStream\Container\Container;

@@ -1,4 +1,5 @@
 <?php
+
 namespace WebStream\Database\Test\Fixtures;
 
 class ResultEntity
