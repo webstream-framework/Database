@@ -39,7 +39,7 @@ class TransactionTest extends \PHPUnit\Framework\TestCase
 {
     use DatabaseProvider;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $driverClassPathList = [
             'WebStream\Database\Driver\Mysql',

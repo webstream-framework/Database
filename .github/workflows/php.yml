@@ -32,10 +32,8 @@ jobs:
       run: composer install --prefer-dist --no-progress --no-suggest
     - name: Create containers
       run: rake
-    - name: debug
-      run: docker ps -a
     - name: Run test suite and calculate coverage
-      run: phpdbg -qrr vendor/bin/phpunit --configuration phpunit.xml --coverage-clover=coverage.clover
+      run: docker exec -it webstream-framework-database sh -c "phpdbg -qrr vendor/bin/phpunit --configuration phpunit.xml --coverage-clover=coverage.clover"
     - name: Prepare send coverage
       run: wget https://scrutinizer-ci.com/ocular.phar
     - name: Send coverage report to scrutinizer
