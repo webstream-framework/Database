@@ -33,7 +33,7 @@ jobs:
     - name: Create containers
       run: rake
     - name: debug
-      run: docker ps
+      run: docker ps -a
     - name: Run test suite and calculate coverage
       run: phpdbg -qrr vendor/bin/phpunit --configuration phpunit.xml --coverage-clover=coverage.clover
     - name: Prepare send coverage
