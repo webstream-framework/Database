@@ -18,7 +18,7 @@ jobs:
         php-version: '7.4'
     - uses: nanasess/setup-ruby@v1
       with:
-        php-version: '2.7'
+        ruby-version: '2.7'
     - name: Cache Composer packages
       id: composer-cache
       uses: actions/cache@v2
