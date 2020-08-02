@@ -16,7 +16,7 @@ jobs:
     - uses: nanasess/setup-php@master
       with:
         php-version: '7.4'
-    - uses: nanasess/setup-ruby@v1
+    - uses: actions/setup-ruby@v1
       with:
         ruby-version: '2.7'
     - name: Cache Composer packages
