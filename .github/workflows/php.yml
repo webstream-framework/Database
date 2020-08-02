@@ -16,6 +16,9 @@ jobs:
     - uses: nanasess/setup-php@master
       with:
         php-version: '7.4'
+    - uses: nanasess/setup-ruby@v1
+      with:
+        php-version: '2.7'
     - name: Cache Composer packages
       id: composer-cache
       uses: actions/cache@v2
@@ -28,7 +31,7 @@ jobs:
       if: steps.composer-cache.outputs.cache-hit != 'true'
       run: composer install --prefer-dist --no-progress --no-suggest
     - name: Create containers
-      run: docker-compose up -d
+      run: rake
     - name: debug
       run: docker ps
     - name: Run test suite and calculate coverage
