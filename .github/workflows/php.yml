@@ -32,9 +32,6 @@ jobs:
       run: composer install --prefer-dist --no-progress --no-suggest
     - name: Create containers
       run: rake
-    - name: wait
-      run: sleep 300
-      timeout-minutes: 3
     - name: Run test suite and calculate coverage
       run: docker exec webstream-framework-database sh -c "vendor/bin/phpunit --configuration phpunit.xml --coverage-clover=coverage.clover"
     - name: Prepare send coverage
