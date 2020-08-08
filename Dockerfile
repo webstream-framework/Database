@@ -4,7 +4,6 @@ RUN apt-get update && apt-get install -y \
   libpq-dev \
   wget \
   zip \
-  inetutils-ping \
   git
 
 RUN pecl install xdebug-2.9.6 && \
