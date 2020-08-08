@@ -32,8 +32,8 @@ jobs:
       run: composer install --prefer-dist --no-progress --no-suggest
     - name: Create containers
       run: rake
-    - name: docker network ls
-      run: docker network ls
+    - name: ping
+      run: docker exec webstream-framework-database sh -c "apt-get update; apt-get install iputils-ping -y; ping webstream-framework-database-mysql"
     - name: Run test suite and calculate coverage
       run: docker exec webstream-framework-database sh -c "vendor/bin/phpunit --configuration phpunit.xml --coverage-clover=coverage.clover"
     - name: Prepare send coverage
