@@ -33,7 +33,7 @@ jobs:
     - name: Create containers
       run: rake
     - name: ping
-      run: docker exec webstream-framework-database sh -c "apt-get update; apt-get install ping -y; ping webstream-framework-database-mysql"
+      run: docker exec webstream-framework-database sh -c "ping webstream-framework-database-mysql -c 4"
     - name: Run test suite and calculate coverage
       run: docker exec webstream-framework-database sh -c "vendor/bin/phpunit --configuration phpunit.xml --coverage-clover=coverage.clover"
     - name: Prepare send coverage
