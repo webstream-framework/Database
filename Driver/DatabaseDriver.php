@@ -1,9 +1,9 @@
 <?php
+
 namespace WebStream\Database\Driver;
 
 use WebStream\DI\Injector;
 use WebStream\Container\Container;
-use Doctrine\DBAL\Connection;
 
 /**
  * DatabaseDriver
@@ -16,7 +16,7 @@ abstract class DatabaseDriver
     use Injector;
 
     /**
-     * @var object DBオブジェクト
+     * @var \Doctrine\DBAL\Connection DBオブジェクト
      */
     protected $connection;
 
@@ -123,7 +123,7 @@ abstract class DatabaseDriver
     /**
      * SQLをセットしてステートメントを返却する
      * @param string SQL
-     * @return object ステートメント
+     * @return \Doctrine\DBAL\Driver\DriverStatement ステートメント
      */
     public function getStatement(string $sql)
     {

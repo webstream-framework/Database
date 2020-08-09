@@ -1,0 +1,67 @@
+version: '3'
+services:
+  webstream-framework-database:
+    build: ./
+    image: webstream-framework/database
+    container_name: webstream-framework-database
+    volumes:
+        - ./:/workspace
+        - ./docker/sqlite:/tmp
+    working_dir: /workspace
+    tty: true
+    networks:
+      - webstream_framework
+  webstream-framework-database-mysql:
+    build: ./docker/mysql/5.7
+    image: webstream-framework/database/mysql/5.7
+    container_name: webstream-framework-database-mysql
+    command: mysqld --lower_case_table_names=1 --character-set-server=utf8 --collation-server=utf8_unicode_ci --skip-character-set-client-handshake
+    tty: true
+    ports:
+      - 13306:3306
+    environment:
+      - MYSQL_DATABASE=sandbox
+      - MYSQL_USER=mysql
+      - MYSQL_PASSWORD=mysql
+      - MYSQL_ROOT_PASSWORD=root
+    networks:
+      - webstream_framework
+  webstream-framework-database-mariadb:
+    build: ./docker/mariadb/10.5
+    image: webstream-framework/database/mariadb/10.5
+    container_name: webstream-framework-database-mariadb
+    command: mysqld --lower_case_table_names=1 --character-set-server=utf8 --collation-server=utf8_unicode_ci --skip-character-set-client-handshake
+    tty: true
+    ports:
+      - 13307:3306
+    environment:
+      - MYSQL_DATABASE=sandbox
+      - MYSQL_USER=mariadb
+      - MYSQL_PASSWORD=mariadb
+      - MYSQL_ROOT_PASSWORD=root
+    networks:
+      - webstream_framework
+  webstream-framework-database-postgresql:
+    build: ./docker/postgresql/10.13
+    image: webstream-framework/database/postgresql/10.3
+    container_name: webstream-framework-database-postgresql
+    tty: true
+    ports:
+      - 15432:5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    networks:
+      - webstream_framework
+  webstream-framework-database-sqlite:
+    build: ./docker/sqlite
+    image: webstream-framework/database/sqlite
+    container_name: webstream-framework-database-sqlite
+    command: sh -c 'sqlite3 /tmp/sandbox.db < /tmp/setup.sql && chmod +x /tmp/sandbox.db'
+    volumes:
+      - ./docker/sqlite:/tmp
+    networks:
+      - webstream_framework
+networks:
+  webstream_framework:
+    external: true

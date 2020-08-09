@@ -1,10 +1,12 @@
 <?php
+
 namespace WebStream\Database;
 
 use WebStream\DI\Injector;
 use WebStream\Container\Container;
 use WebStream\Exception\Extend\DatabaseException;
-use Doctrine\DBAL\Connection;
+use WebStream\Database\Driver\DatabaseDriver;
+use Doctrine\DBAL\TransactionIsolationLevel;
 
 /**
  * DatabaseManager
@@ -116,10 +118,12 @@ class DatabaseManager
 
         $this->connection->setAutoCommit($this->isAutoCommit);
 
-        if ($isolationLevel === Connection::TRANSACTION_READ_UNCOMMITTED ||
-            $isolationLevel === Connection::TRANSACTION_READ_COMMITTED ||
-            $isolationLevel === Connection::TRANSACTION_REPEATABLE_READ ||
-            $isolationLevel === Connection::TRANSACTION_SERIALIZABLE) {
+        if (
+            $isolationLevel === TransactionIsolationLevel::READ_UNCOMMITTED ||
+            $isolationLevel === TransactionIsolationLevel::READ_COMMITTED ||
+            $isolationLevel === TransactionIsolationLevel::REPEATABLE_READ ||
+            $isolationLevel === TransactionIsolationLevel::SERIALIZABLE
+        ) {
             $this->connection->setTransactionIsolation($isolationLevel);
         } else {
             throw new DatabaseException("Invalid transaction isolation level: " . $isolationLevel);
@@ -180,7 +184,7 @@ class DatabaseManager
     public function transactional(\Closure $closure, $config = [])
     {
         if (!array_key_exists('isolationLevel', $config)) {
-            $config['isolationLevel'] = Connection::TRANSACTION_READ_COMMITTED;
+            $config['isolationLevel'] = TransactionIsolationLevel::READ_COMMITTED;
         }
         if (!array_key_exists('autoCommit', $config)) {
             $config['autoCommit'] = false;

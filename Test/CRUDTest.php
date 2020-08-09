@@ -1,4 +1,5 @@
 <?php
+
 namespace WebStream\Database\Test;
 
 require_once dirname(__FILE__) . '/../Modules/IO/File.php';
@@ -60,7 +61,7 @@ class CRUDTest extends \PHPUnit\Framework\TestCase
         $actual = $manager->query($sql, $bind)->select()->toArray();
         $manager->disconnect();
 
-        $this->assertArraySubset($expect, $actual);
+        $this->assertEquals($expect, $actual);
     }
 
     /**

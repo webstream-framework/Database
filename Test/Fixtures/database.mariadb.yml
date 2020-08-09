@@ -1,0 +1,5 @@
+host: webstream-framework-database-mariadb
+port: 3306
+username: mariadb
+password: mariadb
+dbname: sandbox

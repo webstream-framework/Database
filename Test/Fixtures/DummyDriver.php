@@ -1,8 +1,8 @@
 <?php
+
 namespace WebStream\Database\Test\Fixtures;
 
 use WebStream\Database\Driver\DatabaseDriver;
-use Doctrine\DBAL\Configuration;
 use Doctrine\DBAL\DriverManager;
 
 class DummyDriver extends DatabaseDriver
