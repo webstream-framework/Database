@@ -32,8 +32,8 @@ jobs:
       run: composer install --prefer-dist --no-progress --no-suggest
     - name: Create containers
       run: rake
-    - name: pdo
-      run: docker exec webstream-framework-database sh -c "php pdo.php"
+    - name: sleep for docker container creation
+      run: sleep 300
     - name: Run test suite and calculate coverage
       run: docker exec webstream-framework-database sh -c "vendor/bin/phpunit --configuration phpunit.xml --coverage-clover=coverage.clover"
     - name: Prepare send coverage
