@@ -1,4 +1,6 @@
 <?php
+echo "wait";
+sleep(300);
 $dsn = sprintf('mysql:host=%s:3306;dbname=%s',  'webstream-framework-database-mysql', 'sandbox');
 $user = 'mysql';
 $password = 'mysql';
