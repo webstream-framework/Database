@@ -4,6 +4,7 @@ RUN apt-get update && apt-get install -y \
   libpq-dev \
   wget \
   zip \
+  vim \
   git
 
 RUN pecl install xdebug-2.9.6 && \

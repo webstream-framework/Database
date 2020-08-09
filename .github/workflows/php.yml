@@ -34,6 +34,8 @@ jobs:
       run: rake
     - name: Run test suite and calculate coverage
       run: docker exec webstream-framework-database sh -c "vendor/bin/phpunit --configuration phpunit.xml --coverage-clover=coverage.clover"
+    - name: Setup tmate session
+      uses: mxschmitt/action-tmate@v1
     - name: Prepare send coverage
       run: wget https://scrutinizer-ci.com/ocular.phar
     - name: Send coverage report to scrutinizer
