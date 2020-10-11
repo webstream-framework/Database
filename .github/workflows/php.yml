@@ -35,7 +35,7 @@ jobs:
     - name: sleep for docker container creation
       run: sleep 300
     - name: Run test suite and calculate coverage
-      run: docker exec webstream-framework-database sh -c "vendor/bin/phpunit --configuration phpunit.xml --coverage-clover=coverage.clover"
+      run: docker exec webstream-framework-database sh -c "vendor/bin/phpunit --configuration phpunit.xml --coverage-clover=coverage.clover -d memory_limit=512M"
     - name: Prepare send coverage
       run: wget https://scrutinizer-ci.com/ocular.phar
     - name: Send coverage report to scrutinizer
