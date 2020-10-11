@@ -2,8 +2,13 @@
 
 namespace WebStream\Database\Driver;
 
-use WebStream\DI\Injector;
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\ConnectionException;
+use Doctrine\DBAL\Driver\DriverStatement;
+use Doctrine\DBAL\Exception;
+use Doctrine\DBAL\Statement;
 use WebStream\Container\Container;
+use WebStream\DI\Injector;
 
 /**
  * DatabaseDriver
@@ -16,17 +21,18 @@ abstract class DatabaseDriver
     use Injector;
 
     /**
-     * @var \Doctrine\DBAL\Connection DBオブジェクト
+     * @var Connection DBオブジェクト
      */
-    protected $connection;
+    protected Connection $connection;
 
     /**
      * @var Container DB接続設定
      */
-    protected $config;
+    protected Container $config;
 
     /**
      * constructor
+     * @param Container $config
      */
     public function __construct(Container $config)
     {
@@ -54,7 +60,6 @@ abstract class DatabaseDriver
         if ($this->connection !== null) {
             $this->logger->debug("Database disconnect.");
             $this->connection->close();
-            $this->connection = null;
         }
     }
 
@@ -75,6 +80,7 @@ abstract class DatabaseDriver
 
     /**
      * コミットする
+     * @throws ConnectionException
      */
     public function commit()
     {
@@ -85,6 +91,7 @@ abstract class DatabaseDriver
 
     /**
      * ロールバックする
+     * @throws ConnectionException
      */
     public function rollback()
     {
@@ -117,17 +124,18 @@ abstract class DatabaseDriver
      */
     public function inTransaction()
     {
-        return $this->connection !== null ? $this->connection->isTransactionActive() : false;
+        return $this->isConnected() ? $this->connection->isTransactionActive() : false;
     }
 
     /**
      * SQLをセットしてステートメントを返却する
      * @param string SQL
-     * @return \Doctrine\DBAL\Driver\DriverStatement ステートメント
+     * @return Statement|null
+     * @throws Exception
      */
     public function getStatement(string $sql)
     {
-        return $this->connection !== null ? $this->connection->prepare($sql) : null;
+        return $this->isConnected() ? $this->connection->prepare($sql) : null;
     }
 
     /**

@@ -12,6 +12,8 @@ trait EntityProperty
 {
     /**
      * overload setter
+     * @param $name
+     * @param $value
      */
     public function __set($name, $value)
     {
@@ -22,6 +24,8 @@ trait EntityProperty
 
     /**
      * overload getter
+     * @param $name
+     * @return mixed
      */
     public function __get($name)
     {

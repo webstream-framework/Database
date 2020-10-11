@@ -24,6 +24,7 @@ require_once dirname(__FILE__) . '/../Test/Fixtures/ResultEntity.php';
 require_once dirname(__FILE__) . '/../Test/Fixtures/ResultPropertyEntity.php';
 require_once dirname(__FILE__) . '/../Test/Providers/DatabaseProvider.php';
 
+use PHPUnit\Framework\TestCase;
 use WebStream\Container\Container;
 use WebStream\Database\DatabaseManager;
 use WebStream\Database\Test\Fixtures\DummyLogger;
@@ -35,7 +36,7 @@ use WebStream\Database\Test\Providers\DatabaseProvider;
  * @since 2017/12/17
  * @version 0.7
  */
-class CRUDTest extends \PHPUnit\Framework\TestCase
+class CRUDTest extends TestCase
 {
     use DatabaseProvider;
 
@@ -44,8 +45,13 @@ class CRUDTest extends \PHPUnit\Framework\TestCase
      * selectが実行できること
      * @test
      * @dataProvider selectProvider
+     * @param string $sql
+     * @param array $bind
+     * @param array $expect
+     * @param string $driverClassPath
+     * @param string $configPath
      */
-    public function okSelect($sql, $bind, $expect, $driverClassPath, $configPath)
+    public function okSelect(string $sql, array $bind, array $expect, string $driverClassPath, string $configPath)
     {
         $container = new Container();
         $container->logger = new DummyLogger();
@@ -69,8 +75,13 @@ class CRUDTest extends \PHPUnit\Framework\TestCase
      * selectが実行できること、エンティティにマッピングできること
      * @test
      * @dataProvider selectProvider
+     * @param string $sql
+     * @param array $bind
+     * @param array $expect
+     * @param string $driverClassPath
+     * @param string $configPath
      */
-    public function okSelectEntity($sql, $bind, $expect, $driverClassPath, $configPath)
+    public function okSelectEntity(string $sql, array $bind, array $expect, string $driverClassPath, string $configPath)
     {
         $container = new Container();
         $container->logger = new DummyLogger();
@@ -98,8 +109,13 @@ class CRUDTest extends \PHPUnit\Framework\TestCase
      * selectが実行できること、エンティティにマッピングできること
      * @test
      * @dataProvider selectProvider
+     * @param string $sql
+     * @param array $bind
+     * @param array $expect
+     * @param string $driverClassPath
+     * @param string $configPath
      */
-    public function okSelectPropertyEntity($sql, $bind, $expect, $driverClassPath, $configPath)
+    public function okSelectPropertyEntity(string $sql, array $bind, array $expect, string $driverClassPath, string $configPath)
     {
         $container = new Container();
         $container->logger = new DummyLogger();

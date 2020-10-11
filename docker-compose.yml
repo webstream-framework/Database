@@ -42,7 +42,7 @@ services:
     networks:
       - webstream_framework
   webstream-framework-database-postgresql:
-    build: ./docker/postgresql/10.13
+    build: docker/postgresql/10.14
     image: webstream-framework/database/postgresql/10.3
     container_name: webstream-framework-database-postgresql
     tty: true

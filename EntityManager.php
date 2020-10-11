@@ -17,12 +17,12 @@ class EntityManager
     /**
      * @var string エンティティクラスパス
      */
-    private $classpath;
+    private string $classpath;
 
     /**
      * @var array<string> カラムメタ情報
      */
-    private $columnMeta;
+    private array $columnMeta;
 
     /**
      * コンストラクタ
@@ -35,7 +35,7 @@ class EntityManager
 
     /**
      * カラムメタ情報を設定する
-     * @param string カラムメタ情報
+     * @param array $columnMeta カラムメタ情報
      */
     public function setColumnMeta(array $columnMeta)
     {
@@ -44,10 +44,11 @@ class EntityManager
 
     /**
      * 列データをエンティティに変換して返却する
-     * @param array<string> 列データ
+     * @param array $row 列データ
      * @return object 列データエンティティ
+     * @throws \ReflectionException
      */
-    public function getEntity($row)
+    public function getEntity(array $row)
     {
         $instance = new $this->classpath();
         $propertyMap = null;

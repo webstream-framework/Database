@@ -2,11 +2,12 @@
 
 namespace WebStream\Database;
 
-use WebStream\DI\Injector;
-use WebStream\Container\Container;
-use WebStream\Exception\Extend\DatabaseException;
-use WebStream\Database\Driver\DatabaseDriver;
+use Closure;
 use Doctrine\DBAL\TransactionIsolationLevel;
+use WebStream\Container\Container;
+use WebStream\Database\Driver\DatabaseDriver;
+use WebStream\DI\Injector;
+use WebStream\Exception\Extend\DatabaseException;
 
 /**
  * DatabaseManager
@@ -21,22 +22,22 @@ class DatabaseManager
     /**
      * @var ConnectionManager コネクションマネージャ
      */
-    private $connectionManager;
+    private ConnectionManager $connectionManager;
 
     /**
      * @var DatabaseDriver データベースコネクション
      */
-    private $connection;
+    private DatabaseDriver $connection;
 
     /**
      * @var bool 自動コミットフラグ
      */
-    private $isAutoCommit;
+    private bool $isAutoCommit;
 
     /**
      * @var Query クエリオブジェクト
      */
-    private $query;
+    private Query $query;
 
     /**
      * @var Logger ロガー
@@ -45,7 +46,7 @@ class DatabaseManager
 
     /**
      * constructor
-     * @param Container 依存コンテナ
+     * @param Container $container
      */
     public function __construct(Container $container)
     {
@@ -60,7 +61,7 @@ class DatabaseManager
     public function __destruct()
     {
         $this->disconnect();
-        $this->query = null;
+        unset($this->query);
     }
 
     /**
@@ -83,19 +84,23 @@ class DatabaseManager
      */
     public function disconnect()
     {
-        if ($this->connection === null) {
+        if (!isset($this->connection)) {
             return;
         }
 
-        if ($this->inTransaction()) {
-            // トランザクションが明示的に開始された状態でcommit/rollbackが行われていない場合
-            // ログに警告を書き込み、強制的にロールバックする
-            $this->connection->rollback();
-            $this->logger->warn("Not has been executed commit or rollback after the transaction started.");
-        }
+        try {
+            if ($this->inTransaction()) {
+                // トランザクションが明示的に開始された状態でcommit/rollbackが行われていない場合
+                // ログに警告を書き込み、強制的にロールバックする
+                $this->connection->rollback();
+                $this->logger->warn("Not has been executed commit or rollback after the transaction started.");
+            }
 
-        $this->connection->disconnect();
-        $this->connection = null;
+            $this->connection->disconnect();
+
+        } catch (\Exception $e) {
+            throw new DatabaseException($e);
+        }
     }
 
     /**
@@ -178,7 +183,8 @@ class DatabaseManager
 
     /**
      * トランザクションスコープを使用する
-     * @param  Closure $closure クロージャ
+     * @param Closure $closure クロージャ
+     * @param array $config
      * @return object 処理結果
      */
     public function transactional(\Closure $closure, $config = [])
@@ -222,26 +228,22 @@ class DatabaseManager
     }
 
     /**
-     * ロールバックが発生したかどうか
-     * @return boolean ロールバックが発生したかどうか
-     */
-    public function isRollback()
-    {
-        return $this->isRollback;
-    }
-
-    /**
      * トランザクション内かどうか
-     * @return boolean トランザクション内かどうか
+     * @return bool トランザクション内かどうか
      */
     public function inTransaction()
     {
-        return $this->connection->inTransaction();
+        if ($this->connection->inTransaction()) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
      * DB接続されているか
      * @param boolean 接続有無
+     * @return bool
      */
     public function isConnected()
     {
@@ -260,7 +262,7 @@ class DatabaseManager
     /**
      * データベース接続が可能かどうか
      * @param string Modelファイルパス
-     * @return boolean 接続可否
+     * @return bool 接続可否
      */
     public function loadConnection($filepath)
     {
@@ -274,10 +276,11 @@ class DatabaseManager
 
     /**
      * クエリを設定する
-     * @param string SQL
-     * @param array<string> パラメータ
+     * @param string $sql SQL
+     * @param array $bind パラメータ
+     * @return Query
      */
-    public function query($sql, array $bind = [])
+    public function query(string $sql, array $bind = [])
     {
         if ($this->query === null) {
             throw new DatabaseException("Query does not set because database connection failed.");
