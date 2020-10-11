@@ -4,6 +4,7 @@ namespace WebStream\Database\Driver;
 
 use Doctrine\DBAL\Configuration;
 use Doctrine\DBAL\DriverManager;
+use Doctrine\DBAL\Exception;
 
 /**
  * Mysql
@@ -15,6 +16,7 @@ class Mysql extends DatabaseDriver
 {
     /**
      * {@inheritdoc}
+     * @throws Exception
      */
     public function connect()
     {

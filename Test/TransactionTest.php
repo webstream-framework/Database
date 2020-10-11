@@ -77,6 +77,8 @@ class TransactionTest extends \PHPUnit\Framework\TestCase
      * commitが実行できること
      * @test
      * @dataProvider transactionProvider
+     * @param $driverClassPath
+     * @param $configPath
      */
     public function okCommit($driverClassPath, $configPath)
     {
@@ -115,6 +117,8 @@ class TransactionTest extends \PHPUnit\Framework\TestCase
      * rollbackが実行できること
      * @test
      * @dataProvider transactionProvider
+     * @param $driverClassPath
+     * @param $configPath
      */
     public function okRollback($driverClassPath, $configPath)
     {
@@ -150,6 +154,8 @@ class TransactionTest extends \PHPUnit\Framework\TestCase
      * トランザクションスコープによるcommitが実行できること
      * @test
      * @dataProvider transactionProvider
+     * @param $driverClassPath
+     * @param $configPath
      */
     public function okCommitInTransactionScope($driverClassPath, $configPath)
     {
@@ -193,6 +199,8 @@ class TransactionTest extends \PHPUnit\Framework\TestCase
      * トランザクションスコープによるrollbackが実行できること
      * @test
      * @dataProvider transactionProvider
+     * @param $driverClassPath
+     * @param $configPath
      */
     public function okRollbackInTransactionScope($driverClassPath, $configPath)
     {
