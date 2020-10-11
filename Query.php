@@ -2,8 +2,9 @@
 
 namespace WebStream\Database;
 
-use WebStream\DI\Injector;
+use Doctrine\DBAL\Statement;
 use WebStream\Database\Driver\DatabaseDriver;
+use WebStream\DI\Injector;
 use WebStream\Exception\Extend\DatabaseException;
 
 /**
@@ -19,26 +20,26 @@ class Query
     /**
      * @var DatabaseDriver データベースコネクション
      */
-    private $connection;
+    private DatabaseDriver $connection;
 
     /**
      * @var string SQL
      */
-    private $sql;
+    private string $sql;
 
     /**
      * @var array<mixed> バインドパラメータ
      */
-    private $bind;
+    private array $bind;
 
     /**
-     * @var \Doctrine\DBAL\Statement ステートメント
+     * @var Statement ステートメント
      */
-    private $stmt;
+    private Statement $stmt;
 
     /**
      * Constructor
-     * @param DatabaseDriver データベースコネクション
+     * @param DatabaseDriver $connection データベースコネクション
      */
     public function __construct(DatabaseDriver $connection)
     {
@@ -56,7 +57,7 @@ class Query
 
     /**
      * バインドパラメータを設定する
-     * @param array<string> バインドパラメータ
+     * @param array $bind バインドパラメータ
      */
     public function setBind(array $bind)
     {
@@ -116,7 +117,7 @@ class Query
      */
     private function execute()
     {
-        $this->stmt = null;
+        unset($this->stmt);
 
         try {
             $stmt = $this->connection->getStatement($this->sql);
@@ -135,9 +136,7 @@ class Query
 
             if ($stmt->execute()) {
                 $this->stmt = $stmt;
-                $rowCount = $stmt->rowCount();
-
-                return $rowCount;
+                return $stmt->rowCount();
             } else {
                 $messages = $stmt->errorInfo();
                 $message = $messages[2];

@@ -24,21 +24,21 @@ class Result implements \Iterator, \SeekableIterator, \ArrayAccess, \Countable
     /**
      * @var array<mixed> 列データ
      */
-    private $row;
+    private array $row;
 
     /**
      * @var array<mixed> キャッシュ化列データ
      */
-    private $rowCache;
+    private array $rowCache;
 
     /**
      * @var int インデックス位置
      */
-    private $position;
+    private int $position;
 
     /**
      * コンストラクタ
-     * @param Statement ステートメントオブジェクト
+     * @param Statement $stmt ステートメントオブジェクト
      */
     public function __construct(Statement $stmt)
     {
@@ -53,7 +53,7 @@ class Result implements \Iterator, \SeekableIterator, \ArrayAccess, \Countable
     public function __destruct()
     {
         $this->stmt = null;
-        $this->rowCache = null;
+        $this->rowCache = [];
     }
 
     /**
@@ -62,7 +62,6 @@ class Result implements \Iterator, \SeekableIterator, \ArrayAccess, \Countable
      */
     public function count()
     {
-        $count = 0;
         if ($this->stmt === null) {
             $count = count($this->rowCache);
         } else {
@@ -156,6 +155,7 @@ class Result implements \Iterator, \SeekableIterator, \ArrayAccess, \Countable
     /**
      * Implements ArrayAccess#offsetExists
      * オフセットの位置に値が存在するかどうか返却する
+     * @param $offset
      * @return boolean 値が存在するかどうか
      */
     public function offsetExists($offset)
@@ -170,6 +170,7 @@ class Result implements \Iterator, \SeekableIterator, \ArrayAccess, \Countable
     /**
      * Implements ArrayAccess#offsetGet
      * オフセットの位置の値を返却する
+     * @param $offset
      * @return mixed 値
      */
     public function offsetGet($offset)
@@ -217,9 +218,10 @@ class Result implements \Iterator, \SeekableIterator, \ArrayAccess, \Countable
 
     /**
      * 検索結果をエンティティとして返却する
+     * @param string $classpath
      * @return ResultEntity 検索結果
      */
-    public function toEntity($classpath)
+    public function toEntity(string $classpath)
     {
         $resultEntity = new ResultEntity($this->stmt->getWrappedStatement(), $classpath);
         $resultEntity->inject('logger', $this->logger)->initialize();

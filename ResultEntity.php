@@ -2,6 +2,7 @@
 
 namespace WebStream\Database;
 
+use Doctrine\DBAL\Driver\Statement;
 use WebStream\DI\Injector;
 use WebStream\Exception\Extend\CollectionException;
 
@@ -23,29 +24,29 @@ class ResultEntity implements \Iterator, \SeekableIterator, \ArrayAccess, \Count
     /**
      * @var array<mixed> 列データ
      */
-    private $row;
+    private array $row;
 
     /**
      * @var array<mixed> キャッシュ化列データ
      */
-    private $rowCache;
+    private array $rowCache;
 
     /**
      * @var int インデックス位置
      */
-    private $position;
+    private int $position;
 
     /**
      * @var EntityManager エンティティマネージャ
      */
-    private $entityManager;
+    private EntityManager $entityManager;
 
     /**
      * コンストラクタ
-     * @param Doctrine\DBAL\Driver\Statement ステートメントオブジェクト
-     * @param string エンティティクラスパス
+     * @param Statement $stmt ステートメントオブジェクト
+     * @param string $classpath クラスパス
      */
-    public function __construct(\Doctrine\DBAL\Driver\Statement $stmt, $classpath)
+    public function __construct(Statement $stmt, string $classpath)
     {
         $this->stmt = $stmt;
         $this->position = 0;
@@ -59,7 +60,7 @@ class ResultEntity implements \Iterator, \SeekableIterator, \ArrayAccess, \Count
     public function __destruct()
     {
         $this->stmt = null;
-        $this->rowCache = null;
+        $this->rowCache = [];
     }
 
     /**
@@ -77,7 +78,6 @@ class ResultEntity implements \Iterator, \SeekableIterator, \ArrayAccess, \Count
      */
     public function count()
     {
-        $count = 0;
         if ($this->stmt === null) {
             $count = count($this->rowCache);
         } else {
@@ -95,6 +95,7 @@ class ResultEntity implements \Iterator, \SeekableIterator, \ArrayAccess, \Count
      * Implements SeekableIterator#seek
      * カーソル位置を移動する
      * @param mixed オフセット
+     * @return mixed
      */
     public function seek($offset)
     {
@@ -114,6 +115,7 @@ class ResultEntity implements \Iterator, \SeekableIterator, \ArrayAccess, \Count
      * Implements Iterator#current
      * 現在の要素を返却する
      * @return array<string> 列データ
+     * @throws \ReflectionException
      */
     public function current()
     {
@@ -141,7 +143,8 @@ class ResultEntity implements \Iterator, \SeekableIterator, \ArrayAccess, \Count
     public function next()
     {
         if ($this->stmt !== null) {
-            $this->row = $this->stmt->fetch(\PDO::FETCH_ASSOC);
+            $row = $this->stmt->fetch(\PDO::FETCH_ASSOC);
+            $this->row = is_bool($row) && $row === false ? [] : $row;
         }
         $this->position++;
     }
@@ -161,17 +164,18 @@ class ResultEntity implements \Iterator, \SeekableIterator, \ArrayAccess, \Count
     /**
      * Implements Iterator#valid
      * 現在位置が有効かどうかを調べる
-     * @return boolean 有効かどうか
+     * @return bool 有効かどうか
      */
     public function valid()
     {
-        return $this->row !== false;
+        return !empty($this->row);
     }
 
     /**
      * Implements ArrayAccess#offsetExists
      * オフセットの位置に値が存在するかどうか返却する
-     * @return boolean 値が存在するかどうか
+     * @param $offset
+     * @return bool 値が存在するかどうか
      */
     public function offsetExists($offset)
     {
@@ -185,6 +189,7 @@ class ResultEntity implements \Iterator, \SeekableIterator, \ArrayAccess, \Count
     /**
      * Implements ArrayAccess#offsetGet
      * オフセットの位置の値を返却する
+     * @param $offset
      * @return mixed 値
      */
     public function offsetGet($offset)

@@ -3,9 +3,9 @@
 namespace WebStream\Database;
 
 use WebStream\Container\Container;
-use WebStream\IO\File;
 use WebStream\Exception\Extend\ClassNotFoundException;
 use WebStream\Exception\Extend\DatabaseException;
+use WebStream\IO\File;
 
 /**
  * ConnectionManager
@@ -18,16 +18,16 @@ class ConnectionManager
     /**
      * @var array<string> クラスパス-DSNハッシュマップ
      */
-    private $classpathMap;
+    private array $classpathMap;
 
     /**
-     * @var AnnotationContainer データベース接続項目コンテナ
+     * @var Container データベース接続項目コンテナ
      */
-    private $connectionContainer;
+    private Container $connectionContainer;
 
     /**
      * constructor
-     * @param Container 依存コンテナ
+     * @param Container $container
      */
     public function __construct(Container $container)
     {
@@ -39,7 +39,7 @@ class ConnectionManager
      */
     public function __destruct()
     {
-        $this->connectionContainer = null;
+        unset($this->connectionContainer);
     }
 
     /**
@@ -56,12 +56,12 @@ class ConnectionManager
 
     /**
      * 初期処理
-     * @param Container 依存コンテナ
+     * @param Container $container
      */
     private function initialize(Container $container)
     {
         $this->classpathMap = [];
-        $this->connectionContainer = new Container();
+        $this->connectionContainer = new Container(false);
         $logger = $container->logger;
         $innerException = null;
 
