@@ -7,7 +7,7 @@ RUN apt-get update && apt-get install -y \
   vim \
   git
 
-RUN pecl install xdebug-2.9.6 && \
+RUN pecl install xdebug-2.9.8 && \
   echo "zend_extension=$(find /usr/local/lib/php/extensions/ -name xdebug.so)" > /usr/local/etc/php/conf.d/xdebug.ini && \
   echo "xdebug.reemote_enable=on" >> /usr/local/etc/php/conf.d/xdebug.ini && \
   docker-php-ext-install pdo pdo_mysql pdo_pgsql && \
